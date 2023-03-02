@@ -40,19 +40,20 @@ namespace Assets.player
         [Obsolete]
         private void Update()
         {
-            walk();
+            Walk();
             if (m_Controls[k_Jump].Press&&isOnGround)
             {
-                jump();
+                Jump();
             }
 
-            if (Input.GetKeyDown(KeyCode.E)) {
+            if (Input.GetKeyDown(KeyCode.E)) 
+            {
                 GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.EulerRotation(0, 0, 11));
                 arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(50f, 0f);
             }
         }
 
-        private void walk()
+        private void Walk()
         {
             float moveHorizontal = Input.GetAxis("Horizontal");
             m_Rigidbody.velocity = new Vector2(moveHorizontal * m_Speed, m_Rigidbody.velocity.y);
@@ -67,13 +68,13 @@ namespace Assets.player
                 transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 anim.SetBool("isWalking", true);
             }
-            else if(moveHorizontal==0)
+            else if(moveHorizontal == 0)
             {
                 anim.SetBool("isWalking", false);
             }
         }
 
-        private void jump()
+        private void Jump()
         {
             m_Rigidbody.velocity = new Vector2(0, 6);
             isOnGround = false;

@@ -4,21 +4,19 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public GameObject enemyPrefab;
+    public float enemySpawnTime = 1;
     private Transform enemySpawnPoint;
-    public float spawnDelay;
-    public float spawnTime;
-    public bool stopSpawning = false;
 
     private void Start()
     {
         enemySpawnPoint = transform.Find("EnemySpawnPoint");
-        InvokeRepeating("SpawnObject", spawnTime, spawnDelay);
+        StartCoroutine(EnemyGenerator());
     }
-    public void SpawnObject()
+    IEnumerator EnemyGenerator()
     {
+        yield return new WaitForSeconds(enemySpawnTime);
         GameObject enemy = Instantiate(enemyPrefab, enemySpawnPoint.position, Quaternion.identity);
         enemy.GetComponent<Rigidbody2D>().velocity = new Vector2(-20f, 0f);
-        if (stopSpawning)
-            CancelInvoke("SpawnObject");
+        StartCoroutine(EnemyGenerator());
     }
 }

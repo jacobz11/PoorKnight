@@ -8,5 +8,6 @@ public class ArrowShooting : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
             Destroy(gameObject);
+        Destroy(gameObject, 2f);
     }
 }
