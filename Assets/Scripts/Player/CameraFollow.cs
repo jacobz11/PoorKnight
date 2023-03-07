@@ -9,7 +9,7 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        m_Player = FindObjectOfType<PlayerMovement>().gameObject;
+        m_Player = FindObjectOfType<PlayerController>().gameObject;
 
         if (m_Player == null)
         {
