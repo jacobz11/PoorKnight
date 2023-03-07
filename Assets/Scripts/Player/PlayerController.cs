@@ -5,16 +5,9 @@ namespace Assets.player
 {
     internal class PlayerController : MonoBehaviour
     {
-        private const byte k_Jump = GameKeyboardControls.k_Jump;
-        private const byte k_Left = GameKeyboardControls.k_Left;
-        private const byte k_Right = GameKeyboardControls.k_Right;
-        private const byte k_Forwar = GameKeyboardControls.k_Power;
-        private const byte k_Back = GameKeyboardControls.k_Back;
-        private const byte k_Power = GameKeyboardControls.k_Power;
         public bool isCollidingWithEnemy;
         public bool isOnGround = true;
 
-        private GameKeyboardControls m_Controls;
         private Rigidbody2D m_Rigidbody;
         private float m_Speed = 20;
         public GameObject arrowPrefab;
@@ -24,7 +17,6 @@ namespace Assets.player
 
         private void Awake()
         {
-            m_Controls = new GameKeyboardControls();
             m_Rigidbody = GetComponent<Rigidbody2D>();
         }
 
