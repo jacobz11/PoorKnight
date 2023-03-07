@@ -43,9 +43,11 @@ namespace Assets.player
 
         private void InstantiateNewArrows()
         {
-            GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.Euler(0, 0, -90));
-            arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(50f, 0f);
-            //EulerRotation(0, 0, 11)
+            if (flipPlayer.flipX == false) 
+            {
+                GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.Euler(0, 0, -90));
+                arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(50f, 0f);
+            }
         }
 
         private void Walk()
