@@ -6,7 +6,6 @@ public class Enemy : MonoBehaviour
     public GameObject enemyPrefab;
     public float enemySpawnTime = 1;
     private Transform enemySpawnPoint;
-
     private void Start()
     {
         enemySpawnPoint = transform.Find("EnemySpawnPoint");
