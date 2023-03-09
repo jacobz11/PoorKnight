@@ -65,7 +65,6 @@ namespace Assets.player
             }
 
             anim.SetBool("isShooting", runShootingAnimation);
-            
         }
 
         private void UpdateJump()
@@ -80,7 +79,6 @@ namespace Assets.player
             }
 
             anim.SetBool("isJumping", runJumpingAnimation);
-            
         }
 
         IEnumerator ArrowGenerator()
@@ -94,7 +92,7 @@ namespace Assets.player
         private void KillEnemy()
         {
             score++;
-            playrUi.Score= score;
+            playrUi.Score = score;
         }
 
         private void Walk()
