@@ -11,8 +11,12 @@ public class ArrowShooting : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            if (collision.gameObject.GetComponent<Enemy>().Waskilled())
+            {
+                onKillingEnemy?.Invoke();
+            }
+
             Destroy(gameObject);
-            onKillingEnemy?.Invoke();
         }
 
         Destroy(gameObject, 2f);
