@@ -1,40 +1,38 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-    private static byte m_Hp;
-    private static short m_Score;
-    private const string k_FormtToShow = @"Score: {0}
-life : {1}";
-    private static Text s_Text;
+    private int m_Score;
+    private const string k_FormtToShow = @"Score: {0}";
+    private Text m_Text;
 
-    public static short Score
+    public int Score
     {
         get => m_Score;
         set
         {
-            m_Score = value;
+            m_Score = Math.Max(0, value);
             updatingText();
         }
     }
 
-    public static byte HP
+    private void Start()
     {
-        get => m_Hp;
-        set
+        m_Text = GetComponentInChildren<Text>();
+        if (m_Text == null)
         {
-            m_Hp = value;
-            updatingText();
+            Debug.LogError("cont find the Text element");
+        }
+        else
+        {
+            Score = 0; 
         }
     }
 
-    private void Awake()
+    private void updatingText()
     {
-        s_Text = GetComponent<Text>();
-    }
-    private static void updatingText()
-    {
-        s_Text.text = string.Format(k_FormtToShow, m_Score, m_Hp);
+        m_Text.text = string.Format(k_FormtToShow, m_Score);
     }
 }
