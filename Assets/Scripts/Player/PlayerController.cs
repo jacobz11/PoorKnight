@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Assets.player
@@ -7,17 +8,17 @@ namespace Assets.player
     {
         public bool isCollidingWithEnemy;
         public bool isOnGround = true;
-
-        private Rigidbody2D m_Rigidbody;
-        private float m_Speed = 20;
+        private Rigidbody2D rigidbodyPlayer;
+        [SerializeField] float speed = 15f;
         public GameObject arrowPrefab;
         private Transform arrowSpawnPoint;
         private SpriteRenderer flipPlayer;
         private Animator anim;
-
+        private float lastPressTime=0;
+        private float timeSinceLastPress;
         private void Awake()
         {
-            m_Rigidbody = GetComponent<Rigidbody2D>();
+            rigidbodyPlayer = GetComponent<Rigidbody2D>();
         }
 
         private void Start()
@@ -32,48 +33,53 @@ namespace Assets.player
             Walk();
             if (Input.GetKey(KeyCode.Space) && isOnGround)
             {
+                anim.SetBool("isJumping", true);
                 Jump();
-            }
+            } else anim.SetBool("isJumping", false);
 
             if (Input.GetKeyDown(KeyCode.E)) 
             {
-                InstantiateNewArrows();
-            }
+                timeSinceLastPress = Time.time - lastPressTime;
+                lastPressTime = Time.time;
+                if (timeSinceLastPress > 0.45f && flipPlayer.flipX == false)
+                {
+                    StartCoroutine(ArrowGenerator());
+                    anim.SetBool("isShooting", true);
+                }
+            } else anim.SetBool("isShooting", false);
         }
 
-        private void InstantiateNewArrows()
+        IEnumerator ArrowGenerator()
         {
-            if (flipPlayer.flipX == false) 
-            {
-                GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.Euler(0, 0, -90));
-                arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(50f, 0f);
-            }
+            yield return new WaitForSeconds(0.3f);
+            GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.Euler(0, 0, -90));
+            arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(60f, 3f);
+            StopCoroutine(ArrowGenerator());
         }
 
         private void Walk()
         {
             float moveHorizontal = Input.GetAxis("Horizontal");
-            m_Rigidbody.velocity = new Vector2(moveHorizontal * m_Speed, m_Rigidbody.velocity.y);
-
+            rigidbodyPlayer.velocity = new Vector2(moveHorizontal * speed, rigidbodyPlayer.velocity.y);
             if (moveHorizontal > 0.01f)
             {
                 flipPlayer.flipX = false;
-                anim.SetBool("isWalking", true);
+                //anim.SetBool("isWalking", true);
             }
-            else if(moveHorizontal < -0.01f)
+            if (moveHorizontal < -0.01f)
             {
                 flipPlayer.flipX = true;
-                anim.SetBool("isWalking", true);
+                //anim.SetBool("isWalking", true);
             }
-            else if(moveHorizontal == 0)
+            if (moveHorizontal == 0)
             {
-                anim.SetBool("isWalking", false);
+                //anim.SetBool("isWalking", false);
             }
         }
 
         private void Jump()
         {
-            m_Rigidbody.velocity = new Vector2(0, 6);
+            rigidbodyPlayer.velocity = new Vector2(0, 10);
             isOnGround = false;
         }
 
@@ -82,6 +88,7 @@ namespace Assets.player
         {
             if (collision.gameObject.CompareTag("Enemy"))
             {
+                anim.SetBool("isDie", true);
                 isCollidingWithEnemy = true;
                 Destroy(gameObject, 0.3f);
             }
