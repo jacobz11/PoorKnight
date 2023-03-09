@@ -130,9 +130,15 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {
+<<<<<<< HEAD
         "com.unity.2d.animation": "10.0.0-pre.2",
         "com.unity.2d.pixel-perfect": "5.0.3",
         "com.unity.2d.psdimporter": "9.0.0-pre.2",
+=======
+        "com.unity.2d.animation": "7.0.8",
+        "com.unity.2d.pixel-perfect": "5.0.1",
+        "com.unity.2d.psdimporter": "6.0.6",
+>>>>>>> 07fb1639a11a60de58517404f2dfb725dbc59fee
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.2d.spriteshape": "10.0.0-pre.2",
         "com.unity.2d.tilemap": "1.0.0",
@@ -179,7 +185,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {
+<<<<<<< HEAD
       "version": "1.7.0",
+=======
+      "version": "1.6.0",
+>>>>>>> 07fb1639a11a60de58517404f2dfb725dbc59fee
       "depth": 1,
       "source": "registry",
       "dependencies": {

@@ -10,12 +10,15 @@ namespace Assets.player
         public bool isOnGround = true;
         private Rigidbody2D rigidbodyPlayer;
         [SerializeField] float speed = 15f;
+        [SerializeField] float shootCooldown = 0.45f;
         public GameObject arrowPrefab;
         private Transform arrowSpawnPoint;
         private SpriteRenderer flipPlayer;
         private Animator anim;
-        private float lastPressTime=0;
-        private float timeSinceLastPress;
+        private float lastShootTime;
+
+        public bool IsJump => Input.GetKey(KeyCode.Space) && isOnGround;
+
         private void Awake()
         {
             rigidbodyPlayer = GetComponent<Rigidbody2D>();
@@ -23,6 +26,7 @@ namespace Assets.player
 
         private void Start()
         {
+            lastShootTime = Time.time;
             arrowSpawnPoint = transform.Find("ArrowSpawnPoint");
             anim = GetComponentInChildren<Animator>();
             flipPlayer = GetComponentInChildren<SpriteRenderer>();
@@ -31,26 +35,33 @@ namespace Assets.player
         private void Update()
         {
             Walk();
-            if (Input.GetKey(KeyCode.Space) && isOnGround)
-            {
-                anim.SetBool("isJumping", true);
-                Jump();
-            } else anim.SetBool("isJumping", false);
 
-            if (Input.GetKeyDown(KeyCode.E)) 
+            if (IsJump)
             {
-                timeSinceLastPress = Time.time - lastPressTime;
-                lastPressTime = Time.time;
-                if (timeSinceLastPress > 0.45f && flipPlayer.flipX == false)
+                Jump();
+            }
+            else
+            {
+                anim.SetBool("isJumping", false);
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (HasPlayerCooldownExpired())
                 {
                     StartCoroutine(ArrowGenerator());
                     anim.SetBool("isShooting", true);
                 }
-            } else anim.SetBool("isShooting", false);
+            }
+            else
+            {
+                anim.SetBool("isShooting", false);
+            }
         }
 
         IEnumerator ArrowGenerator()
         {
+            /// WHYYYYYYYYYYYYYYYYYYYYYYYYYYY???????????????????????
             yield return new WaitForSeconds(0.3f);
             GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.Euler(0, 0, -90));
             arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(60f, 3f);
@@ -61,6 +72,7 @@ namespace Assets.player
         {
             float moveHorizontal = Input.GetAxis("Horizontal");
             rigidbodyPlayer.velocity = new Vector2(moveHorizontal * speed, rigidbodyPlayer.velocity.y);
+
             if (moveHorizontal > 0.01f)
             {
                 flipPlayer.flipX = false;
@@ -79,6 +91,7 @@ namespace Assets.player
 
         private void Jump()
         {
+            anim.SetBool("isJumping", true);
             rigidbodyPlayer.velocity = new Vector2(0, 10);
             isOnGround = false;
         }
@@ -92,9 +105,8 @@ namespace Assets.player
                 isCollidingWithEnemy = true;
                 Destroy(gameObject, 0.3f);
             }
-            if (collision.gameObject.CompareTag("Ground"))
-                isOnGround = true;
-            else isOnGround = false;
+
+            isOnGround = collision.gameObject.CompareTag("Ground");
         }
         private void OnCollisionExit2D(Collision2D collision)
         {
@@ -102,6 +114,20 @@ namespace Assets.player
             {
                 isCollidingWithEnemy = false;
             }
+        }
+
+        private bool HasPlayerCooldownExpired()
+        {
+            float timeSinceLastAction = Time.time - lastShootTime;
+            bool canPlayrShootArrow = timeSinceLastAction >= shootCooldown && !flipPlayer.flipX;
+
+            if (canPlayrShootArrow)
+            {
+                lastShootTime = Time.time; 
+            }
+
+            return canPlayrShootArrow;
+
         }
     }
 }
