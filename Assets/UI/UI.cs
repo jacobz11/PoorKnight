@@ -6,7 +6,12 @@ public class UI : MonoBehaviour
 {
     private int m_Score;
     private const string k_FormtToShow = @"Score: {0}";
-    private Text m_Text;
+    [SerializeField]
+    private Text scoreText;
+    [SerializeField]
+    private Text gameOverText;
+    [SerializeField]
+    private Text orderText;
 
     public int Score
     {
@@ -20,19 +25,36 @@ public class UI : MonoBehaviour
 
     private void Start()
     {
-        m_Text = GetComponentInChildren<Text>();
-        if (m_Text == null)
+        if (scoreText == null)
         {
-            Debug.LogError("cont find the Text element");
+            Debug.LogError("cont find the scoreText Text element");
         }
         else
         {
             Score = 0; 
         }
+        if (gameOverText == null)
+        {
+            Debug.LogError("cont find the gameOverText Text element");
+        }
+        else
+        {
+            gameOverText.enabled = false;
+        }
     }
 
     private void updatingText()
     {
-        m_Text.text = string.Format(k_FormtToShow, m_Score);
+        scoreText.text = string.Format(k_FormtToShow, m_Score);
+    }
+
+    public void Playerkilled()
+    {
+        gameOverText.enabled = true;
+    }
+
+    public void PlayersFirstShotWasFired()
+    {
+        orderText.enabled = false;
     }
 }

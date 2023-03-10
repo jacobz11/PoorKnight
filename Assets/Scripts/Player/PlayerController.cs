@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SocialPlatforms.Impl;
 
 namespace Assets.player
@@ -17,13 +18,19 @@ namespace Assets.player
         private Transform arrowSpawnPoint;
         private SpriteRenderer flipPlayer;
         private Animator anim;
+        private IEnumerator ShotArrowCoroutine;
 
+        public UnityEvent onPlayerDying = new UnityEvent();
+        [SerializeField]
+        [Range(5f, 1000f)]
+        private float jump;
         [SerializeField]
         private float speed = 15f;
         [SerializeField] 
         private float shootCooldown = 0.45f;
         [SerializeField]
-        private UI playrUi;
+        private UI playerUi;
+        private bool isFirstShot;
 
         public bool IsJump => Input.GetKey(KeyCode.Space) && isOnGround;
         public bool IsShoot => Input.GetKeyDown(KeyCode.E);
@@ -32,6 +39,7 @@ namespace Assets.player
         {
             score = 0;
             rigidbodyPlayer = GetComponent<Rigidbody2D>();
+            isFirstShot = true;
         }
 
         private void Start()
@@ -40,7 +48,18 @@ namespace Assets.player
             arrowSpawnPoint = transform.Find("ArrowSpawnPoint");
             anim = GetComponentInChildren<Animator>();
             flipPlayer = GetComponentInChildren<SpriteRenderer>();
+
+            if (playerUi == null)
+            {
+                Debug.Log("playerUi is null");
+            }
+            else
+            {
+                onPlayerDying.AddListener(playerUi.Playerkilled);
+                ShotArrowCoroutine = FirstShot();
+            }
         }
+
 
         private void Update()
         {
@@ -60,6 +79,12 @@ namespace Assets.player
                 if (HasPlayerCooldownExpired())
                 {
                     StartCoroutine(ArrowGenerator());
+
+                    if (isFirstShot)
+                    {
+                        playerUi.PlayersFirstShotWasFired();
+                        isFirstShot = false;
+                    }
                     runShootingAnimation = true;
                 }
             }
@@ -74,11 +99,24 @@ namespace Assets.player
             if (IsJump)
             {
                 runJumpingAnimation = true;
-                rigidbodyPlayer.velocity = new Vector2(0, 10);
+                rigidbodyPlayer.velocity = new Vector2(0, jump);
                 isOnGround = false;
             }
 
             anim.SetBool("isJumping", runJumpingAnimation);
+        }
+
+
+        private IEnumerator FirstShot()
+        {
+            Debug.Log("in FirstShot");
+            Debug.Log("this is not workig !! need to fix or del ");
+            playerUi.PlayersFirstShotWasFired();
+
+            ShotArrowCoroutine = ArrowGenerator();
+
+            StartCoroutine(ShotArrowCoroutine);
+            yield return null;
         }
 
         IEnumerator ArrowGenerator()
@@ -92,7 +130,7 @@ namespace Assets.player
         private void KillEnemy()
         {
             score++;
-            playrUi.Score = score;
+            playerUi.Score = score;
         }
 
         private void Walk()
@@ -101,19 +139,19 @@ namespace Assets.player
 
             rigidbodyPlayer.velocity = new Vector2(moveHorizontal * speed, rigidbodyPlayer.velocity.y);
             
-            if (moveHorizontal == 0)
-            {
-                //anim.SetBool("isWalking", false);
-            }
-            else if (moveHorizontal > 0.01f)
+            if (moveHorizontal > 0.01f)
             {
                 flipPlayer.flipX = false;
                 //anim.SetBool("isWalking", true);
             }
-            else
+            else if (moveHorizontal < -0.01f)
             {
                 flipPlayer.flipX = true;
                 //anim.SetBool("isWalking", true);
+            }
+            else
+            {
+                //anim.SetBool("isWalking", false);
             }
         }
         
@@ -133,6 +171,7 @@ namespace Assets.player
         {
             anim.SetBool("isDie", true);
             isCollidingWithEnemy = true;
+            onPlayerDying?.Invoke();
             Destroy(gameObject, 0.3f);
         }
 

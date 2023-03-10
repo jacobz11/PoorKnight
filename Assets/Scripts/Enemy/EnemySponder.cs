@@ -2,24 +2,33 @@ using Assets.player;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnemySponder : MonoBehaviour
 {
+    private int enemySppedCunt = 1; 
     public float enemySpawnTime = 1;
     public GameObject enemyPrefab;
 
     private byte nunOfLiveingEnemy;
     private Transform enemySpawnPoint;
-    private GameObject player;
+    private PlayerController player;
+    private bool isRunning;
 
     [SerializeField]
+    [Range(1f, 20)]
     private byte maxNumOfEnemy;
+
+    [SerializeField]
+    [Range(1f, 100)]
+    private float minSpeedForEnemy;
 
     public byte MunOfLiveingEnemy
     {
         get => nunOfLiveingEnemy;
-        set => nunOfLiveingEnemy = (byte)(value < 0 ? value : 0);
+        set => nunOfLiveingEnemy = (byte)(value > 0 ? value : 0);
     }
+    public bool IsPlayerAlive { get => isRunning; set => isRunning = value; }
 
     private void Awake()
     {
@@ -28,29 +37,49 @@ public class EnemySponder : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.Find("Player");
-        enemySpawnPoint = transform.Find("EnemySpawnPoint");
-        StartCoroutine(EnemyGenerator());
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
+        if (player != null)
+        {
+            IsPlayerAlive = true;
+            player.onPlayerDying.AddListener(() => this.IsPlayerAlive = false);
+            enemySpawnPoint = transform.Find("EnemySpawnPoint");
+            StartCoroutine(EnemyGenerator());
+        }
     }
 
     IEnumerator EnemyGenerator()
     {
-        while (player != null)
+        while (this.IsPlayerAlive)
         {
             yield return new WaitForSeconds(enemySpawnTime);
 
             if (MunOfLiveingEnemy < maxNumOfEnemy)
             {
-                GameObject enemy = Instantiate(enemyPrefab, enemySpawnPoint.position, Quaternion.identity);
-                enemy.GetComponent<Rigidbody2D>().velocity = new Vector2(-20f, 0f);
-                enemy.GetComponent<Enemy>().onObjectDestroyed.AddListener(EnemyDestroy);
                 MunOfLiveingEnemy++;
-            }
-            else
-            {
-                Debug.Log("MunOfLiveingEnemy is bigger maxNumOfEnemy");
+
+                GameObject enemyUnityGO = Instantiate(enemyPrefab, enemySpawnPoint.position, Quaternion.identity);
+                Enemy enemy = enemyUnityGO.GetComponent<Enemy>();
+                
+                if (IsPlayerAlive)
+                {
+                    player.onPlayerDying.AddListener(enemy.PlayerKilled);
+                    enemy.onObjectDestroyed.AddListener(EnemyDestroy);
+                    enemy.Speed = GetSpeedForNewEnemy();
+                }
+                else
+                {
+                    enemy.PlayerKilled();
+                }
+
             }
         }
+    }
+
+    public float GetSpeedForNewEnemy()
+    {
+        enemySppedCunt++;
+
+        return (float) minSpeedForEnemy + enemySppedCunt / 10;
     }
 
     public void EnemyDestroy()
