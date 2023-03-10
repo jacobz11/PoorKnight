@@ -41,8 +41,10 @@ public class EnemySponder : MonoBehaviour
 
             if (MunOfLiveingEnemy < maxNumOfEnemy)
             {
+                Debug.Log("enemy need to Instantiate");
+
                 GameObject enemy = Instantiate(enemyPrefab, enemySpawnPoint.position, Quaternion.identity);
-                enemy.GetComponent<Rigidbody2D>().velocity = new Vector2(-20f, 0f);
+                enemy.GetComponent<Rigidbody2D>().velocity = new Vector2(-10f, 0f);
                 enemy.GetComponent<Enemy>().onObjectDestroyed.AddListener(EnemyDestroy);
                 MunOfLiveingEnemy++;
             }

@@ -4383,7 +4383,7 @@ MonoBehaviour:
   isCollidingWithEnemy: 0
   isOnGround: 1
   arrowPrefab: {fileID: 2464878700093745102, guid: a83ede47946da954aa6bf7f6924a4036, type: 3}
-  speed: 15
+  speed: 35
   shootCooldown: 0.45
   playrUi: {fileID: 17308779}
 --- !u!1 &1201635492
