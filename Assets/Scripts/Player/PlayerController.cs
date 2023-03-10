@@ -103,17 +103,17 @@ namespace Assets.player
             Debug.Log(moveHorizontal);
             if (moveHorizontal == 0)
             {
-                //anim.SetBool("isWalking", false);
+                anim.SetBool("isWalking", false);
             }
             if (moveHorizontal > 0f)
             {
                 flipPlayer.flipX = false;
-                //anim.SetBool("isWalking", true);
+                anim.SetBool("isWalking", true);
             }
             if (moveHorizontal < 0f)
             {
                 flipPlayer.flipX = true;
-                //anim.SetBool("isWalking", true);
+                anim.SetBool("isWalking", true);
             }
         }
         
