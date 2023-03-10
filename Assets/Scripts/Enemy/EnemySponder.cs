@@ -18,12 +18,12 @@ public class EnemySponder : MonoBehaviour
     public byte MunOfLiveingEnemy
     {
         get => nunOfLiveingEnemy;
-        set => nunOfLiveingEnemy = (byte)(value <  0 ? value : 0);
+        set => nunOfLiveingEnemy = (byte)(value < 0 ? value : 0);
     }
 
     private void Awake()
     {
-        nunOfLiveingEnemy = 0; 
+        nunOfLiveingEnemy = 0;
     }
 
     private void Start()
@@ -44,13 +44,17 @@ public class EnemySponder : MonoBehaviour
                 GameObject enemy = Instantiate(enemyPrefab, enemySpawnPoint.position, Quaternion.identity);
                 enemy.GetComponent<Rigidbody2D>().velocity = new Vector2(-20f, 0f);
                 enemy.GetComponent<Enemy>().onObjectDestroyed.AddListener(EnemyDestroy);
-                this.MunOfLiveingEnemy++;
+                MunOfLiveingEnemy++;
+            }
+            else
+            {
+                Debug.Log("MunOfLiveingEnemy is bigger maxNumOfEnemy");
             }
         }
     }
 
     public void EnemyDestroy()
     {
-        this.MunOfLiveingEnemy--; 
+        MunOfLiveingEnemy--;
     }
 }
