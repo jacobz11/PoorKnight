@@ -25,7 +25,7 @@ namespace Assets.player
         [Range(5f, 1000f)]
         private float jump;
         [SerializeField]
-        private float speed = 15f;
+        private float speed = 35f;
         [SerializeField] 
         private float shootCooldown = 0.45f;
         [SerializeField]
@@ -124,7 +124,7 @@ namespace Assets.player
             yield return new WaitForSeconds(0.3f);
             GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, Quaternion.Euler(0, 0, -90));
             arrow.GetComponent<ArrowShooting>().onKillingEnemy.AddListener(KillEnemy);
-            arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(60f, 3f);
+            arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(70f, 3f);
         }
 
         private void KillEnemy()
@@ -140,18 +140,20 @@ namespace Assets.player
             rigidbodyPlayer.velocity = new Vector2(moveHorizontal * speed, rigidbodyPlayer.velocity.y);
             
             if (moveHorizontal > 0.01f)
+
             {
                 flipPlayer.flipX = false;
-                //anim.SetBool("isWalking", true);
+                anim.SetBool("isWalking", true);
             }
+
             else if (moveHorizontal < -0.01f)
             {
                 flipPlayer.flipX = true;
-                //anim.SetBool("isWalking", true);
+                anim.SetBool("isWalking", true);
             }
             else
             {
-                //anim.SetBool("isWalking", false);
+                anim.SetBool("isWalking", false);
             }
         }
         
