@@ -8,6 +8,7 @@ TagManager:
   - Sword
   - Ground
   - Arrow
+  - wall
   layers:
   - Default
   - TransparentFX

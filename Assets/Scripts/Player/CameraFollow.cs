@@ -12,7 +12,7 @@ public class CameraFollow : MonoBehaviour
     {
         updateingPosition = transform.position;
         m_Player = FindObjectOfType<PlayerController>().gameObject;
-
+        
         if (m_Player == null)
         {
             Debug.LogError("in CameraFollow m_Player is empty");
