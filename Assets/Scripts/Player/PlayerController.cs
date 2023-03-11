@@ -136,25 +136,22 @@ namespace Assets.player
         private void Walk()
         {
             float moveHorizontal = Input.GetAxis("Horizontal");
-
             rigidbodyPlayer.velocity = new Vector2(moveHorizontal * speed, rigidbodyPlayer.velocity.y);
-            
-            if (moveHorizontal > 0.01f)
+            bool isAnimaWalking = false;
 
+            if (moveHorizontal > 0.01f)
             {
                 flipPlayer.flipX = false;
-                anim.SetBool("isWalking", true);
+                isAnimaWalking = true;
             }
-
             else if (moveHorizontal < -0.01f)
             {
                 flipPlayer.flipX = true;
-                anim.SetBool("isWalking", true);
+                isAnimaWalking = true;
             }
-            else
-            {
-                anim.SetBool("isWalking", false);
-            }
+
+            anim.SetBool("isWalking", isAnimaWalking);
+
         }
         
         private void OnCollisionEnter2D(Collision2D collision)

@@ -16,7 +16,7 @@ public class EnemySponder : MonoBehaviour
     private bool isRunning;
 
     [SerializeField]
-    [Range(1f, 20)]
+    [Range(1, 20)]
     private byte maxNumOfEnemy;
 
     [SerializeField]
@@ -70,7 +70,6 @@ public class EnemySponder : MonoBehaviour
                 {
                     enemy.PlayerKilled();
                 }
-
             }
         }
     }

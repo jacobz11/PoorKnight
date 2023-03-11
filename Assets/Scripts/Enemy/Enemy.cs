@@ -45,6 +45,11 @@ public class Enemy : MonoBehaviour
                 LifePoints--;
             }
         }
+        else if (collision.gameObject.CompareTag("wall"))
+        {
+            Debug.Log("Enemy OnCollisionEnter2D wall");
+            isToRight = !isToRight;
+        }
     }
 
     private void Update()
@@ -66,8 +71,12 @@ public class Enemy : MonoBehaviour
     {
         if (other.CompareTag("wall"))
         {
-            Debug.Log("in OnTriggerEnter");
+            Debug.Log("Enemy OnTriggerEnter wall");
             isToRight = !isToRight;
+        }
+        else
+        {
+            Debug.Log("Enemy OnTriggerEnter wall else");
         }
     }
 }
