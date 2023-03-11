@@ -35,7 +35,6 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Arrow"))
         {
-
             if (Waskilled())
             {
                 Destroy(gameObject);
@@ -47,8 +46,7 @@ public class Enemy : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("wall"))
         {
-            Debug.Log("Enemy OnCollisionEnter2D wall");
-            isToRight = !isToRight;
+            Destroy(gameObject);
         }
     }
 
@@ -65,18 +63,5 @@ public class Enemy : MonoBehaviour
     internal void PlayerKilled()
     {
         Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("wall"))
-        {
-            Debug.Log("Enemy OnTriggerEnter wall");
-            isToRight = !isToRight;
-        }
-        else
-        {
-            Debug.Log("Enemy OnTriggerEnter wall else");
-        }
     }
 }

@@ -18,11 +18,11 @@ namespace Assets.player
         private Transform arrowSpawnPoint;
         private SpriteRenderer flipPlayer;
         private Animator anim;
-        private IEnumerator ShotArrowCoroutine;
 
         public UnityEvent onPlayerDying = new UnityEvent();
+
         [SerializeField]
-        [Range(5f, 1000f)]
+        [Range(5f, 100f)]
         private float jump;
         [SerializeField]
         private float speed = 35f;
@@ -56,7 +56,6 @@ namespace Assets.player
             else
             {
                 onPlayerDying.AddListener(playerUi.Playerkilled);
-                ShotArrowCoroutine = FirstShot();
             }
         }
 
@@ -106,19 +105,6 @@ namespace Assets.player
             anim.SetBool("isJumping", runJumpingAnimation);
         }
 
-
-        private IEnumerator FirstShot()
-        {
-            Debug.Log("in FirstShot");
-            Debug.Log("this is not workig !! need to fix or del ");
-            playerUi.PlayersFirstShotWasFired();
-
-            ShotArrowCoroutine = ArrowGenerator();
-
-            StartCoroutine(ShotArrowCoroutine);
-            yield return null;
-        }
-
         IEnumerator ArrowGenerator()
         {
             yield return new WaitForSeconds(0.3f);
@@ -137,21 +123,20 @@ namespace Assets.player
         {
             float moveHorizontal = Input.GetAxis("Horizontal");
             rigidbodyPlayer.velocity = new Vector2(moveHorizontal * speed, rigidbodyPlayer.velocity.y);
-            bool isAnimaWalking = false;
+            bool runWalkingAnimation = false;
 
             if (moveHorizontal > 0.01f)
             {
                 flipPlayer.flipX = false;
-                isAnimaWalking = true;
+                runWalkingAnimation = true;
             }
             else if (moveHorizontal < -0.01f)
             {
                 flipPlayer.flipX = true;
-                isAnimaWalking = true;
+                runWalkingAnimation = true;
             }
 
-            anim.SetBool("isWalking", isAnimaWalking);
-
+            anim.SetBool("isWalking", runWalkingAnimation);
         }
         
         private void OnCollisionEnter2D(Collision2D collision)
@@ -170,7 +155,6 @@ namespace Assets.player
         {
             anim.SetBool("isDie", true);
             isCollidingWithEnemy = true;
-            onPlayerDying?.Invoke();
             Destroy(gameObject, 0.3f);
         }
 
@@ -193,7 +177,11 @@ namespace Assets.player
             }
 
             return canPlayrShootArrow;
+        }
 
+        private void OnDestroy()
+        {
+            onPlayerDying?.Invoke();
         }
     }
 }

@@ -50,7 +50,7 @@ public class UI : MonoBehaviour
 
     public void Playerkilled()
     {
-        PlayersFirstShotWasFired();
+        PlayersFirstShotWasFired(); 
         gameOverText.enabled = true;
     }
 
